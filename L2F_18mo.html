@@ -73,26 +73,19 @@ class: middle, inverse
 
 Tom Mitchell 1997 (not exact quote):
 
+"An algorithm $f$  learns from data $D_n$ with respect to task $T$ with performance measure $\mathcal{E}$, if $f$'s performance at task  $T$ improves with $D_n$.''
 
-"Given  data $D_n$ from distribution $P$ in  .r[setting $S$], an .r[algorithm $f$]  **learns**    when  $f$'s .r[performance  $\mathcal{E}$]  improves with increasing sample size $n$."
-
-<br>
-
---
-
-A machine learning **task** is: 
-
-Given  $n$ samples from  $P$ in  $S$, design  $f$ to optimize  $\mathcal{E}$ .
 
 ---
 
-### What is a Setting?
+### What is a Task?
 
-A setting is a sextuple $S = \lbrace \mathcal{Z}, \mathcal{A}, \mathcal{P}, \mathcal{H}, \ell, {R} \rbrace$
+A task is defined by a septuple $T = \lbrace \mathcal{Z}, P, \mathcal{P}, \mathcal{A},  \mathcal{H}, \ell, {R} \rbrace$
 
 | Definition | Notation | Example
 |:--- |:--- |:--- | 
 | Measurements  | $ \mathcal{Z}$ |  $z_i = (x_i,y_i): i \in [n]$ |
+|  Density | $P\_\theta : \mathcal{Z} \rightarrow \mathbb{R}_{\geq 0}$  | standard normal
 |  Model | $\mathcal{P} := \lbrace P_\theta : \theta \in \Theta \rbrace$ | Gaussian
 | Action space |  $\mathcal{A}$ |  turn left
 | Hypotheses  | $\mathcal{H} = \lbrace h: \mathcal{Z} \to \mathcal{A} \rbrace$  | $a = \mathbb{I}(z>0)$
@@ -105,121 +98,71 @@ A setting is a sextuple $S = \lbrace \mathcal{Z}, \mathcal{A}, \mathcal{P}, \mat
 
 ### What is an Algorithm?
 
-$f$ is a sequence of learning procedures, $f_1, f_2, \ldots$, where each $f_n \in \mathcal{F}$ maps from an element of data space to an action, $f\_n : \mathcal{Z}^n \to \mathcal{H}$.
+$f$ is a sequence of learning procedures, $f_1, f_2, \ldots$, where each $f_n \in \mathcal{F}$ maps from a data corpus $\mathcal{D}_n$  to a hypothesis $h$, $f\_n : \mathcal{Z}^n \to \mathcal{H}$.
 
 
 ### What is  Performance?
 
 Generalization error $\mathcal{E}$ is the expected risk with respect to  training dataset:
 
-$$ \mathcal{E}\_S(f\_n,P) = \mathbb{E}_{P}[R(f_n(D_n))].$$
+$$ \mathcal{E}\_T(f\_n) = \mathbb{E}_{P}[R(f_n(D_n))].$$
 
 
 
 ---
-## What is  Learning?
+## What is Learning?
 
-
-
-"Given  data $D_n$ from distribution $P$ in  .r[setting $S$], an .r[algorithm $f$]  **learns**    when  $f$'s .r[performance  $\mathcal{E}$]  improves with increasing sample size $n$."
-
+"An algorithm $f$ learns from  data $D_n$ with respect to task $T$ with performance measure $\mathcal{E}$, if $f$'s performance at task  $T$ improves with $D_n$."
 
 <br>
 
-$f$ learns iff $\mathcal{E}\_S(f\_n,P)$ is non-constant monotonically decreasing:
-
-$$ \forall n: \; \mathcal{E}\_S(f\_n,P) \geq \mathcal{E}\_S(f\_{n+1},P) \text{ (never goes up)}$$ 
-
-$$\exists \; n:  \mathcal{E}\_S(f\_n,P) > \mathcal{E}\_S(f\_{n+1},P)  \text{ (sometimes goes down)}$$ 
-
-
----
-
-### What is Learning Efficiency?
-
-The relative efficiency of $f\_n$ relative to $f'\_n$ is 
-$$RE\_{n}^{P}(f,f') := \frac{\mathcal{E}\_S(f\_n,P)}{\mathcal{E}\_S(f'\_n,P)}.$$
+$f$ learns from data iff $\mathcal{E}_T(f_n)$ is better than $\mathcal{E}_T(f_0)$, or more formally
 
 <br>
 
-In general, we want $RE \leq 1 - \delta$, for some $\delta>0$ and $n,n' > n_0$. 
---
-
-<br>
-
-The goal of machine learning is to design new $f$'s that are increasingly more efficient. 
+$$\frac{\mathcal{E}_T(f_0)}{\mathcal{E}_T(f_n)} > 1$$ 
 
 ---
 
 ### What is Transfer Learning? 
 
+- Given
+  - data $D_0$, and an algorithm $f_0$ trained using only $D_0$. 
+  - data $D_n$ from possibly another distribution, 
+  - algorithm $f_n$ trained using both $D_0$ and $D_n$
 
-Given $n> n\_0$ samples from $P$ in  setting $S$ .r[and $n'> n\_0$ samples from $Q$], 
-an algorithm $f$  **transfer learns**    when  $f$'s performance  $\mathcal{E}$  improves with increasing sample size $n$ .r[more when also including the $n'$ samples from $Q$].
+
+
+"An algorithm $f$  .pu[transfer] learns from data $D_n$  with respect to transfer learning task $T$ with performance measure $\mathcal{E}$, if $f$'s performance at task  $T$ improves over  with $D_n$.'"
 
 --
 
-Let $TLE\_{n,n'}^{P,Q}(f):=\frac{\mathcal{E}\_S(f\_{n+n'},P)}{\mathcal{E}\_S(f\_{n},P)}.$
 
-Formally, $f$ transfer learns iff $\exists \; \delta, n\_0 > 0$ such that $\forall n\_j > n\_0$:
+$f$ .pu[transfer] learns from data iff 
 
-$TLE\_{n,n'}^{P,Q}(f) < 1 - \delta.$
+$$\frac{\mathcal{E}\_T(f\_0)}{\mathcal{E}\_T(f\_{n})} > 1.$$
 
----
-
-### What is Universal Transfer Learning?
-
-We say that $f$ **universally** transfers in setting $S$ iff 
-$\exists \; \delta, n\_0 > 0$ such that $\forall n\_j > n\_0$:
-
-<!-- $\forall n,n' > n\_0$, $\exists \; \delta > 0$ such that: -->
-
-
-
-$\exists P,Q \in \mathcal{P}: TLE\_{n,n'}^{P,Q}(f) <  1 - \delta$ (sometimes better), and
-
-$\forall P,Q \in \mathcal{P}: TLE\_{n,n'}^{P,Q}(f) \leq  1 + \delta$  (never much worse).
 
 
 ---
 
 ### What is Multi-Task (MT) Learning?
 
+- Given
+  - for $j=1,\ldots, J$ 
+      - data $D_j$, possibly from different distributions, 
+      - algorithm $f_j$ trained using only $D_j$,
+  - algorithm $f_n$ trained using all $D_j$'s,
+  - a multi-task risk (e.g., average risk across tasks).
 
 
-Given $n$ samples from .r[$J$ different distributions $P\_j$ in settings $S\_j$], 
-an algorithm $f$  **multi-task learns**   when  $f$'s performance  $\mathcal{E}\_j$ $\forall j$ improves with increasing sample size $n\_j$ more .r[on average] when also including  .r[all the other $n-n\_j$ samples].
+An algorithm $f$  .pu[multi-task] learns from data $D_n$   with respect to multi-task $T$ with overall performance measure $\mathcal{E}_T$, if $f$'s performance at task  $T$ improves with $D_n$."
 
 --
 
+$f_0$ .pu[multi-task] learns from data iff 
 
-Let $MTE^{\vec{P}}\_{\vec{n}}(f) :=  \frac{1}{J}\sum\_{j=1}^J \frac{\mathcal{E}\_j(f\_{\sum\_j n\_j},P\_j)}{\mathcal{E}\_j(f\_{n_j},P\_j)}.$
-
-<br> 
-Formally, $f$ MT learns 
-iff $\exists \; \delta, n\_0 > 0$ such that $\forall n\_j > n\_0$:
- <!-- \; \& \; \forall j \in [J]$: -->
-<!-- $ \forall j \in [J]$ $\exists \;  n\_j >n\_0 \;  \&  \; \delta > 0$ such that  -->
-$$MTE^{\vec{P}}\_{\vec{n}}(f) < 1 - \delta. $$
-
-
-<br>
-
-
-
----
-
-### What is Universal MT Learning?
-
-We say that $f$ **universally** multi-task learns in settings $\vec{S}$ iff
-$\exists \; \delta, n\_0 > 0$ such that $\forall n\_j > n\_0$:
-
-
-$\exists \vec{P} \in \vec{\mathcal{P}}: MTE\_{\vec{n}}^{\vec{P}}(f) <  1 - \delta$  (sometimes better), and
-
-$\forall \vec{P} \in \vec{\mathcal{P}}: MTE\_{\vec{n}}^{\vec{P}}(f) \leq  1 + \delta$ (never much worse).
-
-
+$$\frac{\mathcal{E}\_T( \lbrace f\_j \rbrace )}{\mathcal{E}\_T(f\_{n})} > 1.$$
 
 
 
@@ -228,29 +171,38 @@ $\forall \vec{P} \in \vec{\mathcal{P}}: MTE\_{\vec{n}}^{\vec{P}}(f) \leq  1 + \d
 ### What is Lifelong Learning?
 
 
+- Given
+  - for $j=1,\ldots$ 
+      - data $D_j$, possibly from different distributions, 
+      - algorithm $f_j$ trained using only $D_j$,
+  - algorithm  $f_n$ .pu[sequentially] trained using all $D_j$'s,
+  - a multi-task risk (e.g., average risk across tasks).
 
-Given $n$ .r[sequential] samples from .$J$ different distributions $P\_j$ in settings $S\_j$, an algorithm $f$  **lifelong learns**   when  $f$'s performance  $\mathcal{E}\_j$ $\forall j$ improves with increasing sample size $n\_j$ more on average when also including  .r[both future and past data], and performance .r[never  gets much worse].
+
+An algorithm $f$  .pu[lifelong] learns from data $D_n$   with respect to lifelong task $T$ with overall performance measure $\mathcal{E}_T$, if $f$'s performance at task  $T$ improves with $D_n$."
 
 
+--
 
-Let $ LLE^{P\_j,\vec{P}}\_{n\_j,\vec{n}}(f) :=   \frac{\mathcal{E}\_j(f\_{\sum\_j n\_j},P\_j)}{\mathcal{E}\_j(f\_{n_j},P\_j)}.$
+$f$ .pu[lifelong] learns from data iff 
 
-
-
-Formally, $f$ lifelong learns iff 
-$\exists \; \delta, n\_0 > 0$ such that $\forall n\_j > n\_0$: 
-
-$\frac{1}{J}\sum\_{j=1}^J LLE^{P\_j,\vec{P}}\_{n\_j,\vec{n}}(f) <  1 - \delta$ (average better), and
-
-$\nexists j \in [J]: LLE^{P\_j,\vec{P}}\_{n\_j,\vec{n}}(f) \geq  1 + \delta$  (never much worse).
-
+$$\frac{\mathcal{E}\_T( \lbrace f\_j \rbrace )}{\mathcal{E}\_T(f\_{n})} > 1.$$
 
 ---
 
-### What is Universal Lifelong Learning?
+###  Generalized Learning
+
+<br> 
+
+|       | $J>1$ | Sequential  | 
+| :---: | :---: | :---:       | 
+| Machine     | 0 | 0 | 
+| Multi-task  | 1 | 0 | 
+| Lifelong    | 1 | 1 | 
 
 
-We say that $f$ **universally** lifelong learns in settings $\vec{S}$ iff $\forall n\_j > n\_0$ and $\forall \vec{P} \in \vec{\mathcal{P}}$, lifelong learning holds.
+
+
 
 
 
@@ -285,31 +237,31 @@ Given
 Assume
 1. The $ z\_t $ are independent
 
-<!-- 1. At each time step $t$, we observe 
-  - a sample $z_t \in \mathcal{Z}$,   
-  - a task identifier $j \in \mathcal{J}$ (which is fixed for all $t$).
-3. The number of samples $n$ increases.
-3. All samples are independent of each other.
-
-Assumption 3 can be relaxed. -->
-
 ---
 
 ### Constituents of  Learning Machines 
 
-1.  .r[representation space]: data are transformed into this space
-2.  .r[transformer]: maps each point to the representation space
-3.  .r[decider]: takes an action using the transformed data
+1.  .pu[representation]: data are transformed into a representation space
+2.  .pu[transformer]: maps each point to the representation space
+3.  .pu[decider]: takes an action using the transformed data
 
 ---
 
 ### Example 1 
 
-Linear 2-class classification
+Linear 2-class classification (we want to label black dot)
 
-1. Representation space: the real number line 
-2. Transformer: projection matrix that maps each feature vector onto real number line 
-3. Decider: threshold such that values above threshold are one class, and below are the other
+<img src="images/l2m_18mo/cml_all_data.png" style="width:500px" class="center"/>
+
+
+---
+#### Example 1.1 - Linear Discriminant Analysis
+
+1. .pu[representation]: the real number line 
+2. .pu[transformer]: projection matrix that maps each feature vector onto real number line 
+3. .pu[decider]: threshold such that values above threshold are one class, and below are the other
+
+<img src="images/l2m_18mo/cml_linear.jpg" style="width:600px" class="center"/>
 
 <!-- diagram of linear classifier (projection from R^d to R then threshold) for two class, spherical gaussians -->
 <!-- figure of problem -->
@@ -319,11 +271,13 @@ Linear 2-class classification
 
 ---
 
-### Constituents of Decision Trees 
+#### Example 1.2 - Decision Tree
 
-1. Representation space: a partition of $ \mathbb{R}^{d} $
-2. Transformer: maps a data point to a cell of the partition
-3. Deciders: plurality (or average) of elements per cell
+1. .pu[representation]: a partition of $ \mathbb{R}^{d} $
+2. .pu[transformer]: maps a data point to a cell of the partition
+3. .pu[deciders]: plurality (or average) of elements per cell
+
+<img src="images/l2m_18mo/cml-tree.jpg" style="width:650px" class="center"/>
 
 <!-- diagram of a partition for two class, spherical gaussians -->
 <!-- figure of representation (partition) -->
@@ -332,23 +286,53 @@ Linear 2-class classification
 
 ---
 
-### Constituents of Decision Forests 
+#### Example 1.3 - Decision Forests 
 
-1. Representation space: a set of partitions of $ \mathbb{R}^{d} $ 
-2. Transformer: maps a data point to a cell of each of the partitions
-3. Deciders: average of decision trees (posterior probabilities)
+1. .pu[representation]: a set of partitions of $ \mathbb{R}^{d} $ 
+2. .pu[transformer]: maps a data point to a cell of each of the partitions
+3. .pu[deciders]: average of decision trees (posterior probabilities)
+
+<img src="images/l2m_18mo/cml_forest.jpg" style="width:600px" class="center"/>
+
+Each tree uses a different subset of data to transform (partition) space
+
+<!-- Each partition learned from the various subsamples is a **representation**, and the decision tree **transforms** data into those representations. The **decider** chooses the class based on the cell probability.  -->
+
+<!-- --- -->
+
+<!-- #### Example 1.3 - Decision Forests (Tree 1)
+
+Subsample the data and learn a partition of the input space. The input space is $\mathbb{R}^2$ and the classes are green or purple. Each cell of the partition has an associated probability of class green. A new data point is first placed into a cell, and then its class is predicted based on the cell's probability.
+
+<img src="images/l2m_18mo/decisiontree_for_forest1.png" style="width:400px" class="center"/> -->
+
+<!-- ---   -->
+
+<!-- #### Example 1.3 - Decision Forests (Tree 2) -->
+
+<!-- Similarly, another random subsample will yield a different decision tree, with different cells and cell probabilities. -->
+
+<!-- <img src="images/l2m_18mo/decisiontree_for_forest2.png" style="width:500px" class="center"/> -->
+
+<!-- --- -->
+
+<!-- #### Example 1.3 - Decision Forests -->
+
+<!-- Each partition learned from the various subsamples is a **representation**, and the decision tree **transforms** data into those representations. The **decider** chooses the class based on the cell probability.  -->
+
+<!-- <img src="images/l2m_18mo/cml_forest.jpg" style="width:600px" class="center"/> --> 
 
 <!-- diagram for two class, spherical gaussians -->
 <!-- figure of representtaion (multiple partitions) -->
 <!-- figure of data point in a cell of each of the partitions -->
 <!-- figure of classifying a data point  -->
----
+<!-- ---
 ### Decision Forests
 
-- Transformer: partition space using a subset of the $ n $ data samples
-- Decider:  majority vote on remaining samples
+-.pu[transformer]: partition space using a subset of the $ n $ data samples
+-.pu[decider]:  majority vote on remaining samples
 
-<img src="images/l2m_rf_cartoon.jpg" style="width:475px" class="center"/>
+<img src="images/l2m_rf_cartoon.jpg" style="width:475px" class="center"/> -->
 
 <!-- diagram 1: all data
 diagram 2: transformer data
@@ -359,30 +343,6 @@ diagram 6: show true posterior
 diagram 7: consider showing posterior errors
 - explan n, d
 -->
----
-
-### Key Insight of Uncertainty Forests 
-
-- Sub-sample data into two sets, one to learn transformers, and one to learn deciders
-- Doing so yields consistent estimates of the probabilities averaged per cell, that is,
-$$\hat{P}(f\_n) \rightarrow P$$
----
-
-#### Key Algorithm Parameters Per Tree
-
-- To learn partitions:
-  - bootstrap = true (sklearn default)
-  - min_samples_leaf=1 (sklearn default; maximally pure trees)
-  - max_features = $\sqrt{p}$ (sklearn default; not relevant for 2D data)
-  - max_depth=30 (to accelerate run time; makes accuracy worse typically)
-  - max_samples = 0.32 (to enable samples for learning posteriors)
-- To learn posteriors:
-  - finite sample correction = 1 / ( 2 $\times$ # samples in cell)
-
-
-- Nothing special about our tree construction, basically:
-  - default sklearn parameters, plus 
-  - modifications to enable learning posteriors (deciders)
 
 <!--   
 new slide: add error + posterior plots for linear example 
@@ -390,57 +350,38 @@ new slide: add error + posterior plots for linear example
 
 ---
 
-### Example 2: .purple[Not-XOR (N-XOR)]
-  
-  
-  <img src="images/NXOR.png" style="width:275px" class="center"/>
-  
-  - .purple[N-XOR]
-    - Samples in the (+, +) and (-, -) quadrants are class 1  
-    - samples in the (-, +) and (+, -) quadrants are class 0. 
-  - The optimal decision boundary is the coordinate axes. 
+### Example 2
 
-<!-- change from n-xor to xor -->
+XOR (we want to label black dot)
+- Samples in the (+, +) and (-, -) quadrants are class 1  
+- samples in the (-, +) and (+, -) quadrants are class 0. 
+- The optimal decision boundary is the coordinate axes. 
+
+<img src="images/l2m_18mo/xor.png" style="width:400px" class="center"/>
+
+
 
 ---
-### Decision Forests
+### Example 2.1 - Honest Forests
   
-  <div style="display:inline-flex">
-       <div>
-            <img src="images/L2M_18mo_nxor_xor_rf.png" alt="Snow" style="height:300px; width:300px">
-       </div>
-       <div>
-            <img src="images/posterior_heatmap_xor_nxor_rf.png" alt="nah" style="height:300px; width:300px">
-       </div>
-  </div>
+<img src="images/l2m_18mo/just_xor.png" alt="Snow" style="height:300px;">
+<!-- <img src="images/l2m_18mo/posterior_heatmap_xor_nxor_rf.png" style="height:300px;"> -->
 
-Left:
 - Error is estimated generalization error, $\hat{\mathbb{E}}_{P}[R(f_n(D_n))]$
-- estimated using 100 .purple[N-XOR] samples
-- transformer (partition) learned using one subset of data from .purple[N-XOR] 
-- decider (posteriors) learned using other data from .purple[N-XOR]
+- transformer (partition) learned using one subset of data from XOR 
+- decider (posteriors) learned using .pu[other] data from XOR
 - Error monotonically decreases with increasing sample size
 
-<!-- change from n-xor to xor -->
 
 ---
-### Decision Forests
-  
-  <div style="display:inline-flex">
-       <div>
-            <img src="images/L2M_18mo_nxor_xor_rf.png" alt="Snow" style="height:300px; width:300px">
-       </div>
-       <div>
-            <img src="images/posterior_heatmap_xor_nxor_rf.png" alt="nah" style="height:300px; width:300px">
-       </div>
-  </div>
+### Example 2.1 - Honest Forests
 
-Right:
-- learned probability of an observation  being class 1 
-- using 300 .purple[N-XOR] training samples 
+<img src="images/l2m_18mo/just_xor.png" alt="Snow" style="height:300px;">
+<img src="images/l2m_18mo/posterior_heatmap_xor_nxor_rf.png" style="height:300px;">
 
-<!-- change from n-xor to xor -->
-<!-- change colormap to purple / green diverging  -->
+- learned probability of an observation being green 
+- using 100 XOR training samples 
+
 
 ---
 
@@ -449,7 +390,7 @@ Right:
 Given
 1. a task $ T $
 2. observed source data $ z'\_1, z'\_2, .., z'\_s $ 
-3. observed target data $ z\_1, z\_2, .., z\_n $
+3. observed target data $ z\_{s+1}, z\_{s+2}, .., z\_n $
 
 Assume
 1. the $ z\_t $, $ z'\_t $ are all mutually independent 
@@ -471,20 +412,28 @@ Assumption 4 can be relaxed. -->
 ### Constituents of Transfer Machines 
 
 
-1.  .r[universal representation space]: source and target data are transformed into this space
-2.  .r[transformers]: map each source and target point to the representation space
-3.  .r[decider]: takes an action using all the transformed data
-
+1.  .pu[representation]: source and target data are transformed into this space
+2.  .pu[transformers]: map each source and target point to the representation space
+3.  .pu[decider]: takes an action using all the transformed data
 
 ---
 
 ### Example 3
 
-Two linear 2-class classification tasks
+A 2-class classification problem, also with other 2-class data
 
-1. Universal Representation Space: the real number line 
-2. Transformer: projection matrix that maps data onto real number line 
-3. Decider: threshold such that target values above threshold are one class, and below are the other
+<div style="display:inline-flex">
+     <div>
+          <img src="images/l2m_18mo/cml_linear_problem1.png" alt="Snow" style="height:300px; width:300px">
+     </div>
+     <div>
+          <img src="images/l2m_18mo/cml_linear_problem_dataset2.png" alt="nah" style="height:300px; width:300px">
+     </div>
+</div>
+
+<!-- 1. .pu[representation]: the real number line 
+2. .pu[transformer]: projection matrix that maps data onto real number line 
+3. .pu[decider]: threshold such that target values above threshold are one class, and below are the other -->
 
 <!-- task 1: 
     - mean1 = (1,1) orange
@@ -494,16 +443,14 @@ task 2:
   - and mean0 = (1,1) magenta
 -->
 
-
 ---
-### Constituents of Transfer Forests
+### Constituents of Transfer Trees
 
-- Universal representation space: a partition of $ \mathbb{R}^{d} $
-- Transformer: partition space using all the data from source task (and potentially updated using target data)
-- Decider: average of majority vote in each node from each tree applied to target  data 
+1. .pu[representation]: a partition of $ \mathbb{R}^{d} $
+2. .pu[transformer]: places data point into a cell of the partition learned on **source** data
+3. .pu[decider]: majority vote of **target** data in the cell of the partition
 
-<img src="images/l2m_transfer_cartoon.jpg" style="width:475px" class="center"/>
-
+<img src="images/l2m_18mo/transfer-tree.jpg" class="center" alt="Snow" style="height:300px; width:550px">
 <!-- update above image as above: label arrows transformer and decider -->
 
 
@@ -518,61 +465,67 @@ give title to posterior plot
 http://colorbrewer2.org/#type=diverging&scheme=PuOr&n=11
 -->
 
+<!-- ---
+
+## Transfer Tree
+
+- Use **source** data to learn a transformer (estimate partitions) 
+- Use **source** and **target** data to learn deciders (estimate posteriors)
+- Average predictions from each decider.
+
+<img src="images/l2m_18mo/transfer-tree.jpg" class="center" alt="Snow" style="height:300px; width:550px"> -->
+
 ---
-### Example 4: .orange[XOR] to .purple[Not-XOR (N-XOR)]
+### Example 4: .blue[Not-XOR (N-XOR)] to .r[XOR]
 
+- .r[XOR]
+  - Samples in the (+, +) and (-, -) quadrants are green  
+  - samples in the (-, +) and (+, -) quadrants are purple. 
+- .blue[N-XOR]
+  - Samples in the (+, +) and (-, -) quadrants are green  
+  - samples in the (-, +) and (+, -) quadrants are purple. 
+- The optimal decision boundaries for both problems are the coordinate axes.
 
-<img src="images/XOR-NXOR.png" style="width:475px" class="center"/>
-
-- .orange[XOR]
-  - Samples in the (+, +) and (-, -) quadrants are class 0  
-  - samples in the (-, +) and (+, -) quadrants are class 1. 
-- .purple[N-XOR]
-  - Samples in the (+, +) and (-, -) quadrants are class 1  
-  - samples in the (-, +) and (+, -) quadrants are class 0. 
-- The optimal decision boundaries for both problems are the coordinate axes. 
-
-
-
+<img src="images/l2m_18mo/xor_nxor.png" style="width:475px" class="center"/> 
 
 ---
 ### Transfer  Forests
 
 <div style="display:inline-flex">
      <div>
-          <img src="images/L2M_18mo_nxor_xor_transfer.png" alt="Snow" style="height:300px; width:300px">
+          <img src="images/l2m_18mo/L2M_18mo_xor_nxor_transfer.png" alt="Snow" style="height:300px; width:300px">
      </div>
      <div>
-          <img src="images/posterior_heatmap_xor_nxor_transfer.png" alt="nah" style="height:300px; width:300px">
+          <img src="images/l2m_18mo/posterior_heatmap_xor_nxor_transfer.png" alt="nah" style="height:300px; width:300px">
      </div>
 </div>
 
-- (Left)  Decision Forest .orange[XOR] uses:
-  - 100 samples from .orange[XOR] to learn transformers (partition)
-  - $n$ data from .purple[N-XOR] to learn decider (posterior)
-- (Right) learned probability of an observation  being class 1 
-  - used 100 .orange[XOR]  and 300 .purple[N-XOR] training samples 
+- (Left)  Decision Forest .r[XOR] uses:
+  - 100 samples from .r[XOR] to learn decider (posterior)
+  - $n$ data from .blue[N-XOR] to learn transformer  (partition)
+- (Right) learned probability of an observation  being green
+  - used 100 .r[XOR]  and 300 .blue[N-XOR] training samples 
 
-
+<!-- change posterior heatmap colors -->
 ---
 ### Transfer Forests
 
 <div style="display:inline-flex">
      <div>
-          <img src="images/L2M_18mo_nxor_xor_transfer.png" alt="Snow" style="height:300px; width:300px">
+          <img src="images/l2m_18mo/L2M_18mo_xor_nxor_transfer.png" alt="Snow" style="height:300px; width:300px">
      </div>
      <div>
-          <img src="images/posterior_heatmap_xor_nxor_transfer.png" alt="nah" style="height:300px; width:300px">
+          <img src="images/l2m_18mo/posterior_heatmap_xor_nxor_transfer.png" alt="nah" style="height:300px; width:300px">
      </div>
 </div>
 
 - Learning partitions is "harder" than posteriors:
-  - DF .orange[XOR] only gets 100 samples to learn partitions,  
-  - DF .purple[N-XOR] gets up to 400
-- Nonetheless, DF .orange[XOR] exhibits transfer learning, because its error decreases with increasing sample size
+  - DF .r[XOR] only gets 100 samples to learn partitions,  
+  - DF .blue[N-XOR] gets up to 400
+- DF .blue[N-XOR] exhibits transfer learning, because its error decreases on .r[XOR] as the number of samples from .blue[N-XOR] increases for a fixed amount of data from .r[XOR] 
 
 
-
+<!-- change posterior heatmap colors -->
 
 ---
 
@@ -595,9 +548,9 @@ Assume
 ### Constituents of Lifelong  LM (L2M) 
 
 
-1.  .r[universal representation space]: data from all tasks are transformed into this space
-2.  .r[transformers]: map each data point from all tasks to the representation space
-3.  .r[deciders]: takes an action using transformed data from all tasks
+1.  .pu[representation]: data from all tasks are transformed into this space
+2.  .pu[transformers]: map each data point from all tasks to the representation space
+3.  .pu[deciders]: takes an action using transformed data from all tasks
 
 
 ---
@@ -606,61 +559,86 @@ Assume
 
 $J$ increasing linear 2-class classification tasks
 
-1. Representation: the real number line 
-2. Transformers: $J$ different projection matrix that maps data onto real number line 
-3. Deciders: $J$ thresholds such that values above threshold are one class, and below are the other
+<div style="display:inline-flex">
+     <div>
+          <img src="images/l2m_18mo/cml_linear_problem1.png" alt="Snow" style="height:200px; width:200px">
+     </div>
+     <div>
+          <img src="images/l2m_18mo/cml_linear_problem_dataset2.png" alt="nah" style="height:200px; width:200px">
+     </div>
+     <div>
+          <img src="images/l2m_18mo/cml_linear_problem3.png" alt="Snow" style="height:200px; width:200px">
+     </div>
+</div> ...
+
+<!-- 1. .pu[representation]: the real number line 
+2. .pu[transformers]: $J$ different projection matrix that maps data onto real number line 
+3. .pu[deciders]: $J$ thresholds such that values above threshold are one class, and below are the other -->
+
+
+
+
 
 
 <!-- means are +/- j (potentially with jitter added) -->
 
+---
+### Lifelong Trees
+
+1. .pu[representation]: set of partitions
+2. .pu[transformers]: a tree to partition space for each task 
+3. .pu[deciders]: average of majority vote in each node from each tree applied to each task's data
+
+<img src="images/l2m_18mo/lifelong-tree.jpg" style="height:400px;width:550px">
+
+
 
 ---
+### Lifelong Trees
 
-### Lifelong Forests
+1. .pu[representation]: set of partitions
+2. .pu[transformers]: a tree to partition space for each task 
+3. .pu[deciders]: average of majority vote in each node from each tree applied to each task's data
 
-
-- Transformers: a forest to partition space for each task 
-- Deciders: average of majority vote in each node from each tree applied to each task's data
-<img src="images/l2m_lifelong_cartoon.jpg" style="width:475px" class="center"/>
-
+- **each task** yields a representation,
+- the data are transformed into each representation,  
+- the deciders make predictions in each representation,
+- the prediction is  averaged across representations. 
 <!-- update a la other ones -->
 
 
 
 ---
-### Example 6: .orange[XOR] and .purple[Not-XOR (N-XOR)]
+### Example 6: .r[XOR] and .blue[Not-XOR (N-XOR)]
 
-
-<img src="images/XOR-NXOR.png" style="width:475px" class="center"/>
-
-- .orange[XOR]
-  - Samples in the (+, +) and (-, -) quadrants are class 0  
-  - samples in the (-, +) and (+, -) quadrants are class 1. 
-- .purple[N-XOR]
-  - Samples in the (+, +) and (-, -) quadrants are class 1  
-  - samples in the (-, +) and (+, -) quadrants are class 0. 
+- .r[XOR]
+  - Samples in the (+, +) and (-, -) quadrants are green  
+  - samples in the (-, +) and (+, -) quadrants are purple. 
+- .blue[N-XOR]
+  - Samples in the (+, +) and (-, -) quadrants are purple  
+  - samples in the (-, +) and (+, -) quadrants are green. 
 - The optimal decision boundaries for both problems are the coordinate axes. 
 
-
+<img src="images/l2m_18mo/xor_nxor.png" style="width:475px" class="center"/>
 <!-- update colors  -->
 
 
 ---
-### Lifelong  Forests 
+### Lifelong Forests 
 
 <div style="display:flex">
       <div>
-          <img src="images/L2M_18mo_nxor_xor_lifelong.png" alt="Snow" style="height:300px; width:300px">
+          <img src="images/l2m_18mo/L2M_18mo_xor_nxor_lifelong.png" alt="Snow" style="height:300px; width:300px">
      </div>
      <div>
-          <img src="images/posterior_heatmap_xor_nxor_lifelong.png" alt="nah" style="height:300px; width:300px">
+          <img src="images/l2m_18mo/posterior_heatmap_xor_nxor_lifelong.png" alt="nah" style="height:300px; width:300px">
      </div>
 </div>
 
-- Lifelong Forests learn the optimal decision boundary using  both 
-  1.  100 samples from .orange[XOR], and 
-  2. $n$ samples from  .purple[N-XOR].
-- Posteriors are  learned using only 300 samples from .purple[N-XOR] on both partitions.
+- .green[Lifelong Forests] learn the optimal decision boundary using  both 
+  -  100 samples from .r[XOR], and 
+  -  $n$ samples from  .blue[N-XOR].
+- Posteriors are  learned using only 300 samples from .blue[N-XOR] on both partitions.
 - Prediction is based on  the  learned posterior averaged over both partitions.
 
 <!-- make same as transfer learning plots but add new line
@@ -672,15 +650,15 @@ update text accordingly
 
 <div style="display:flex">
      <div>
-          <img src="images/L2M_18mo_nxor_xor_lifelong.png" alt="Snow" style="height:300px; width:300px">
+          <img src="images/l2m_18mo/L2M_18mo_xor_nxor_lifelong.png" alt="Snow" style="height:300px; width:300px">
      </div>
      <div>
-          <img src="images/posterior_heatmap_xor_nxor_lifelong.png" alt="nah" style="height:300px; width:300px">
+          <img src="images/l2m_18mo/posterior_heatmap_xor_nxor_lifelong.png" alt="nah" style="height:300px; width:300px">
      </div>
 </div>
 
-- Lifelong forests perform as well as the best method regardless of the amount of .purple[N-XOR] data
-- Lifelong forests therefore exhibits .r[adaptation to new tasks and circumstances] more effectively than a na&iuml;ve transfer  forest
+- .green[Lifelong Forests] perform as well as the best method regardless of the amount of .blue[N-XOR] data
+- .green[Lifelong Forests] therefore exhibits .pu[adaptation to new tasks and circumstances] more effectively than a na&iuml;ve transfer  forest
 
 <!-- may want to show plots for other transfer direction -->
 
@@ -688,12 +666,12 @@ update text accordingly
 ---
 ### Adversarial Tasks 
 
-- .orange[XOR] vs .purple[N-XOR] is the easiest possible sequence of tasks 
+- .r[XOR] vs .blue[N-XOR] is the easiest possible sequence of tasks 
 - Consider an adversarial task: 
   - a second task, .blue[Rotated-XOR (R-XOR)], which has zero information about the first task; 
   - therefore, its data can only add noise and increase error 
 
-<img src="images/xor_rxor.png" style="width:475px" class="center"/>
+<img src="images/l2m_18mo/xor_rxor.png" style="width:475px" class="center"/>
 
 <!-- add two linear two-class classification problem w adverserial source task -->
 
@@ -709,7 +687,7 @@ update text accordingly
   - x-axis is # of .blue[R-XOR] data samples
   - we used 100 .r[XOR] data samples
 - Right figures:
-  - estimated probability of an observation from class 1
+  - estimated probability of an observation from purple
   - learned using 100 .r[XOR]  and 300 .blue[R-XOR] training samples
 
 
@@ -718,10 +696,10 @@ update text accordingly
 
 <div style="display:flex">
      <div>
-          <img src="images/L2M_18mo_xor_rxor_rf.png" alt="Snow" style="height:300px; width:300px">
+          <img src="images/l2m_18mo/L2M_18mo_xor_rxor_rf.png" alt="Snow" style="height:300px; width:300px">
      </div>
      <div>
-          <img src="images/posterior_heatmap_xor_rxor_rf.png" alt="nah" style="height:300px; width:300px">
+          <img src="images/l2m_18mo/posterior_heatmap_xor_rxor_rf.png" alt="nah" style="height:300px; width:300px">
      </div>
 </div>
 
@@ -737,10 +715,10 @@ update text accordingly
 
 <div style="display:flex">
      <div>
-          <img src="images/L2M_18mo_xor_rxor_transfer.png" alt="Snow" style="height:300px; width:300px">
+          <img src="images/l2m_18mo/L2M_18mo_xor_rxor_transfer.png" alt="Snow" style="height:300px; width:300px">
      </div>
      <div>
-          <img src="images/posterior_heatmap_xor_rxor_transfer.png" alt="nah" style="height:300px; width:300px">
+          <img src="images/l2m_18mo/posterior_heatmap_xor_rxor_transfer.png" alt="nah" style="height:300px; width:300px">
      </div>
 </div>
 
@@ -756,14 +734,14 @@ update text accordingly
 
 <div style="display:flex">
      <div>
-          <img src="images/L2M_18mo_xor_rxor_lifelong.png" alt="Snow" style="height:300px; width:300px">
+          <img src="images/l2m_18mo/L2M_18mo_xor_rxor_lifelong.png" alt="Snow" style="height:300px; width:300px">
      </div>
      <div>
-          <img src="images/posterior_heatmap_xor_rxor_lifelong.png" alt="nah" style="height:300px; width:300px">
+          <img src="images/l2m_18mo/posterior_heatmap_xor_rxor_lifelong.png" alt="nah" style="height:300px; width:300px">
      </div>
 </div>
 
-- Lifelong Forests learn the optimal decision boundary using  data from both (1) .r[XOR], and (2)  .blue[R-XOR]. 
+- .green[Lifelong Forests] learn the optimal decision boundary using  data from both (1) .r[XOR], and (2)  .blue[R-XOR]. 
 - Posteriors are  learned using only data from .r[XOR] on both partitions. 
 - Prediction is based on  the  estimated posterior averaged over both partitions.
 
@@ -774,15 +752,15 @@ update text accordingly
 
 <div style="display:flex">
      <div>
-          <img src="images/L2M_18mo_xor_rxor_lifelong.png" alt="Snow" style="height:300px; width:300px">
+          <img src="images/l2m_18mo/L2M_18mo_xor_rxor_lifelong.png" alt="Snow" style="height:300px; width:300px">
      </div>
      <div>
-          <img src="images/posterior_heatmap_xor_rxor_lifelong.png" alt="nah" style="height:300px; width:300px">
+          <img src="images/l2m_18mo/posterior_heatmap_xor_rxor_lifelong.png" alt="nah" style="height:300px; width:300px">
      </div>
 </div>
 
-- Lifelong forests do not dramatically degrade performance of past tasks, despite maximally adversarial tasks
-- Therefore, lifelong forests avoid .r[catastrophic forgetting] regardless of new task distributions, making it fundamentally .r[safe].
+- .green[Lifelong Forests] do not dramatically degrade performance of past tasks, despite maximally adversarial tasks
+- Therefore, .green[Lifelong Forests] avoid .pu[catastrophic forgetting] regardless of new task distributions, making it fundamentally .pu[safe].
 
 <!-- fix poster plots as above  -->
 
@@ -801,6 +779,9 @@ class: center, middle, inverse
 - There are 500 training images and 100 testing images per class.
 - CIFAR 10x10 break the 100 class task problem into 10 problems, each a 10 class problem.
 
+<img src="images/l2m_18mo/cifar-10.png" style="position:absolute; left:250px; width:400px;"/>
+
+
 <!-- show images of each task/class
 eg, https://www.cs.toronto.edu/~kriz/cifar.html for 1 task,
 make a table left column is superclass and next 5 columns are tasks
@@ -815,7 +796,7 @@ Here is the list of classes in the CIFAR-100:
 - David Lopez-Paz, Marc'Aurelio Ranzato. "[Gradient Episodic Memory for Continual Learning](https://papers.nips.cc/paper/7225-gradient-episodic-memory-for-continual-learning.pdf)." NIPS 2017.
 - 127 Citations 
 
-<img src="images/evoplot_cifar100.png" style="width:750px;"/>
+<img src="images/l2m_18mo/evoplot_cifar100.png" style="width:750px;"/>
 
 Figure 1: evolution of the test accuracy at the first task, as more tasks are learned.
 
@@ -826,14 +807,30 @@ Figure 1: evolution of the test accuracy at the first task, as more tasks are le
 
 - Seungwon Lee, James Stokes, and Eric Eaton. "[Learning Shared Knowledge for Deep Lifelong Learning Using Deconvolutional Networks](https://www.ijcai.org/proceedings/2019/393)." IJCAI, 2019.
 
-<img src="images/progressive_nets.png" style="width:500px;"/>
+<img src="images/l2m_18mo/progressive_nets.png" style="width:500px;"/>
 
 Figure 1: No approaches demonstrate reverse transfer, and most demonstrate catastrophic forgetting.
 
+---
+#### Key Algorithm Parameters Per Tree
+
+- To learn partitions:
+  - bootstrap = true (sklearn default)
+  - min_samples_leaf=1 (sklearn default; maximally pure trees)
+  - max_features = $\sqrt{p}$ (sklearn default; not relevant for 2D data)
+  - max_depth=30 (to accelerate run time; makes accuracy worse typically)
+  - max_samples = 0.32 (to enable samples for learning posteriors)
+- To learn posteriors:
+  - finite sample correction = 1 / ( 2 $\times$ # samples in cell)
+
+
+- Nothing special about our tree construction, basically:
+  - default sklearn parameters, plus 
+  - modifications to enable learning posteriors (deciders)
 
 ---
 
-<img src="images/initial-cifar-100-debugged-1-subsample-precision.png" style="width:750px;"/>
+<img src="images/l2m_18mo/cifar-100-TLE-Accuracy.png" style="width:750px;"/>
 
 - Lifelong Forests exhibit both "reverse" or "backward" transfer: its performance on previously observed tasks increases as more tasks are observed.
 
@@ -843,9 +840,52 @@ add error  normalized each line by dividing by single task performance
 with errorbars
 -->
 
----
+<!-- ---
 
 <img src="images/initial-cifar-100-debugged-1-subsample-recall.png" style="width:750px;"/>
+ -->
+
+
+---
+class: middle, inverse
+
+
+## .center[Hardware Design Implications]
+
+---
+
+
+### Forest > Neural Nets (single threaded)
+
+
+<img src="images/s-rerf_6plot_times.png" style="width:750px;"/>
+
+- Forests are red, Neural nets are blue 
+
+
+---
+
+### Forest > Neural Nets (single threaded)
+
+
+- Forests can be trained in a massively parallel fashion 
+  - unlike DeepNets and ConvNets
+- Forests can make predictions in a massively parallel fashion
+  - unlike DeepNets and ConvNets
+- Even single threaded, 
+  - forest training is faster than NN
+  - forest prediction is faster than NN 
+- Forests can only access a small fraction of the stored model to make a prediction 
+  - because most leaves are not activated for any given input
+
+---
+
+### Implications 
+
+- GPUs/TPUs are not required 
+- Forests can be deployed on IoT/Mobile devices with hard drives to store model 
+- Additional layers of memory (L1/L2/L3 Cache, etc.) will immediately accelerate prediction time 
+- Incremental updating of trees is a new access pattern that no modern hardware is designed to efficiently support
 
 
 
@@ -866,6 +906,14 @@ $\mathcal{E}\_{S}(f\_n,P)  \rightarrow \arg \min\_f \; \mathcal{E}\_{S}(f,P)$ as
 
 $\forall P \in \mathcal{P}: \mathcal{E}\_{S}(f\_n,P)  \rightarrow \arg \min\_f \; \mathcal{E}\_{S}(f,P)$ as $n \to \infty$.
 
+
+---
+
+### Key Insight of Uncertainty Forests 
+
+- Sub-sample data into two sets, one to learn transformers, and one to learn deciders
+- This yields consistent estimates of the probabilities averaged per cell:
+$$\hat{P}(f\_n) \rightarrow P$$
 
 ---
 
@@ -911,8 +959,8 @@ class: middle, inverse
 ### Concrete Examples and Limitations 
 
 - Any supervised lifelong learning classification problem with the same feature space code will run on today.
-- Any supervised lifelong learning .r[regression] problem code will run  soon.
-- If all feature spaces are  "typical" .r[manifolds] (images, time-series), improved code will run soon.
+- Any supervised lifelong learning .pu[regression] problem code will run  soon.
+- If all feature spaces are  "typical" .pu[manifolds] (images, time-series), improved code will run soon.
 - We will soon have an implementation that does not require the data or model to fit in main memory.
 - If different tasks have different feature spaces (eg, some only have images, others only have text), code will run in near future.
 - We do not plan to have reinforcement learning in near future.
@@ -1344,11 +1392,11 @@ $$\hat{P}(f\_n) \rightarrow P$$ -->
 
 
 For each $(z_t, j_t)$,
-1. update .r[transformer]  using all available data: $h\_t (\lbrace z\_t,j\_t \rbrace) \rightarrow \hat{f}\_t$ 
-2. for each sample, apply .r[transformer]: $\hat{f}\_t (z\_i) = \tilde{z}\_i$
-3. for each  .r[decider], update using all available data: 
+1. update .pu[transformer]  using all available data: $h\_t (\lbrace z\_t,j\_t \rbrace) \rightarrow \hat{f}\_t$ 
+2. for each sample, apply .pu[transformer]: $\hat{f}\_t (z\_i) = \tilde{z}\_i$
+3. for each  .pu[decider], update using all available data: 
       $g\_t (\lbrace \tilde{z}\_t,j\_t \rbrace) \rightarrow  \lbrace \hat{\eta}\_j \rbrace $
-4. apply .r[decider]: $\hat{\eta}\_{j\_t}(\tilde{z}\_t) \rightarrow a\_t$
+4. apply .pu[decider]: $\hat{\eta}\_{j\_t}(\tilde{z}\_t) \rightarrow a\_t$
 
 
 
@@ -1359,11 +1407,11 @@ For each $(z_t, j_t)$,
 
 
 For each $(z_t, j_t)$,
-1. update .r[transformer]: $h\_t ( z\_t,j\_t, \hat{f}\_{t-1} ) \rightarrow \hat{f}\_t$ 
-2. apply .r[transformer]: $\hat{f}\_t (z\_t) = \tilde{z}\_t$
-3. update all .r[deciders]: 
+1. update .pu[transformer]: $h\_t ( z\_t,j\_t, \hat{f}\_{t-1} ) \rightarrow \hat{f}\_t$ 
+2. apply .pu[transformer]: $\hat{f}\_t (z\_t) = \tilde{z}\_t$
+3. update all .pu[deciders]: 
       $g\_t ( \tilde{z}\_t,j\_t, \hat{\eta}\_{t-1} ) \rightarrow  \lbrace \hat{\eta}\_j \rbrace $
-4. apply .r[decider]: $\hat{\eta}\_{j\_t}(\tilde{z}\_t) \rightarrow a\_t$
+4. apply .pu[decider]: $\hat{\eta}\_{j\_t}(\tilde{z}\_t) \rightarrow a\_t$
 
 
 
@@ -1377,6 +1425,51 @@ For each $(z_t, j_t)$,
   2. Apply forest to each observation so far 
   3. For each task, update plurality/average vote per tree 
   4. Apply average vote for $z_t$
+
+
+---
+
+# Universal Slides 
+
+
+
+---
+
+### What is Universal Transfer Learning?
+
+We say that $f$ **universally** transfers in setting $S$ iff 
+$\exists \; \delta, n\_0 > 0$ such that $\forall n\_j > n\_0$:
+
+<!-- $\forall n,n' > n\_0$, $\exists \; \delta > 0$ such that: -->
+
+
+
+$\exists P,Q \in \mathcal{P}: TLE\_{n,n'}^{P,Q}(f) <  1 - \delta$ (sometimes better), and
+
+$\forall P,Q \in \mathcal{P}: TLE\_{n,n'}^{P,Q}(f) \leq  1 + \delta$  (never much worse).
+
+
+---
+
+### What is Universal MT Learning?
+
+We say that $f$ **universally** multi-task learns in settings $\vec{S}$ iff
+$\exists \; \delta, n\_0 > 0$ such that $\forall n\_j > n\_0$:
+
+
+$\exists \vec{P} \in \vec{\mathcal{P}}: MTE\_{\vec{n}}^{\vec{P}}(f) <  1 - \delta$  (sometimes better), and
+
+$\forall \vec{P} \in \vec{\mathcal{P}}: MTE\_{\vec{n}}^{\vec{P}}(f) \leq  1 + \delta$ (never much worse).
+
+
+
+
+---
+
+### What is Universal Lifelong Learning?
+
+
+We say that $f$ **universally** lifelong learns in settings $\vec{S}$ iff $\forall n\_j > n\_0$ and $\forall \vec{P} \in \vec{\mathcal{P}}$, lifelong learning holds.
 
 
 

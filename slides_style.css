@@ -8,7 +8,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 400;
   margin-bottom: 0;
   /* margin-left: 10px; */
-  color: #318dde;
+  color: #84c6ff;
   text-align: left;
   /*text-shadow: 2px 2px gray; /*#ff0000;*/*/
 }
@@ -86,19 +86,22 @@ top: 50px;
     font-style: italic;
 }
 li p { line-height: 1.25em; }
-.r { color: #F41711; }
+.r { color: rgb(255, 91, 86); }
 .w {color: white;}
 .k {color: black;}
 .ye { color: #FFFF00; }
 .gold { color: #ffd700; }
+.green { color:  #00cc44; }
 .y { color: #fcfaf6; }
 .pink { color: #FF87F3;}
 .orange { color: #FFA500;}
 .g { color: #00CC00; }
 .blue { color: #0000FF; }
+.h { color: #318dde; }
 .lb { color: #75E9FF;}
 .s {color :#318dde;}
 .purple { color: #A149A9;}
+.pu { color: #A149A9;}
 .large { font-size: 2em; }
 .black { color: black; background-color: white;}
 a, a > code {
@@ -121,12 +124,24 @@ code {
 
 .pull-left {
   float: left;
-  width: 47%;
+  width: 48%;
 }
+.pull-l {
+  position: absolute;
+  left: 0;
+  width: 48%;
+}
+
 .pull-right {
   float: right;
-  width: 47%;
+  width: 48%;
 }
+.pull-r {
+  position: absolute;
+  right: 0;
+  width: 48%;
+}
+
 .center {
   margin: auto;
   width: 100%;
@@ -245,9 +260,9 @@ th, td {
     text-align: left;
     padding: 8px;
 }
-tr:nth-child(even){background-color: #dfd6c2}
+tr:nth-child(even){background-color: #5e5c5a}
 th {
-    background-color: #94D6C9;
+    background-color: #318dde;
     color: white;
 }
 
