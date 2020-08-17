@@ -90,9 +90,6 @@ Training set $\bold{D}\_n = (x\_1, y\_1), (x\_2, y\_2), ..., (x\_n, y\_n)$.
 
 .center[![:scale 75%](images/LearningAlgo2.png)]
 
---
-$h: \mathcal{X} \times \mathcal{T} \rightarrow \mathcal{Y}$
-
 ---
 
 ### What is Progressive Learning?
@@ -177,7 +174,7 @@ name:perf
 
 ---
 
-## Theory of the Task Learnable
+### Theory of the Task Learnable
 
 - What is a task?
 
@@ -269,23 +266,79 @@ name:approach
 - Use the decider to weight the various options 
 - This is .ye[ensembling representations].
 
+---
+ 
+
+### Ensemble Representations 
+
+
+![:scale 100%](images/Ensemble.png)
 
 ---
-name:disc
+
+### Example: Partitions as Transformers
+
+![:scale 100%](images/partition_example.png)
+
+---
+
+### Task Awareness
+
+- Task Aware: 
+$$h(x, t) = y$$
+- Task Unaware:
+$$h(x) = y$$
+$$h(x) = (y, t)$$
+
+---
+
+### Task Aware Approach
+
+- From data $(X_1, Y_1, T_1), ..., (X_n, Y_n, T_n)$, estimate $p(y \mid x, t)$ for each task by sharing transformers.
+- $h(x, t)$ returns $y$ that maximizes $p(y \mid x, t)$.
+
+---
+
+### Task Unaware Approach 1
+
+- From data $(X_1, Y_1, T_1), ..., (X_n, Y_n, T_n)$, estimate $p(y \mid x, t)$ for each task by sharing transformers.
+- .ye[From data $(X_1, T_1), ..., (X_n, T_n)$, estimate $p(t \mid x)$].
+- $h(x)$ returns $y$ that maximizes <br>
+$p(y | x) = \sum\_t p(y, t \mid x) = \sum\_t p(y \mid x, t) \cdot $ .ye[$p(t \mid x)$]
+
+---
+
+### Task Unaware Approach 2
+
+- Add random data to each task with the class label .ye["-1"], meaning .ye["none-of-the-above"].
+- From data $(X_1, Y_1, T_1), ..., (X_n, Y_n, T_n)$, estimate $p(y \mid x, t)$ for each task by sharing transformers.
+- $h(x)$ first classifies $x$ according to $p(y \mid x, t)$ for all tasks $t$.
+- Among the task clasisfiers that did not yield "none-of-the-above", return $(y, t)$ that maximizes $p(y \mid x, t)$ over both $y$ and $t$.
+
+
+---
+
+## Robustness Approach
+
+- Our standard PL algorithm uses all the transformers available.
+- .ye[One-vs-All]: Decide to use all of the additional transformers or none, based on training/validation accuracy.
+- .ye[Sample]: Sample $c$ combinations of additional transformers, and choose th best combination based on training/validation accuracy.
+
+---
+name:exp
 
 ### Outline 
 
 
 - [Motivation](#motiv)
-- [Learning Tasks](#learn)
-- [Ensembling Representations](#rep)
-- Discussion
-
-
+- [Measures of Performance](#perf)
+- [Approach](#approach)
+- Experiments
+- [Discussion](#disc)
 
 ---
 
-### Revisiting Example 1: Load Forecasting
+### Task Aware: Robustness
 
 .center[![:scale 75%](images/multicity_load.jpg)]
 
