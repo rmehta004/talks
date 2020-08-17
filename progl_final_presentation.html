@@ -289,6 +289,7 @@ $$h(x, t) = y$$
 - Task Unaware:
 $$h(x) = y$$
 $$h(x) = (y, t)$$
+Note: $t$ associated to the test point $x$ does not have to be seen in the training set.
 
 ---
 
@@ -338,81 +339,98 @@ name:exp
 
 ---
 
-### Task Aware: Robustness
+#### Task Aware: Robustness on CIFAR 10x10
 
-.center[![:scale 75%](images/multicity_load.jpg)]
-
-Yize Chen
+.center[![:scale 100%](images/robust_fig.png)]
 
 ---
 
-### Revisiting Example 2: Sentiment Analysis
-
-
-560 Yelp examples + 1596 toxic comment examples
-
---
-
-$ \rightarrow $ Error on toxic comment identification decreased error from .ye[0.115] to .ye[0.045] 
-
---
-
-$ \rightarrow $ .ye[TE = 2.544].
-
+### Task Aware: UI Icon Recognition
 
 ---
 
+### Task Unaware: CIFAR 10x10
 
-### Extension: Task Oblivious Hypothesis
 
---
-
-- Previous method was actually $h: \mathcal{Q} \times \mathcal{T} \rightarrow \mathcal{A}$.
-
---
-
-- Next goal: move toward $h: \mathcal{Q} \rightarrow \mathcal{A}$.
+.center[![:scale 100%](images/cifar100_task_obl_fig.png)]
 
 ---
 
-#### Inexhautive Summary of Contributions
+#### Task Unaware: Zero-Shot Sentiment Classification on Reviews
 
 
+.center[![:scale 80%](images/review_zero_shot.png)]
+
+---
+
+### Task Unaware: UI Icon Recognition
+
+
+.center[![:scale 80%](images/icon_task_obl_fig.png)]
+
+---
+
+#### Where We Are with Progressive Learning
 
 1. Theory
   - Formalized Progressive Learning as generalization of classical machine learning (transfer, multitask)
   - Theorems regarding transferability and robustness of our algorithms.
-  - Next: submit manuscript.
 2. Methods
   - Proposed omnidirectional transfer learning framework by ensembling representations.
-  - Implemented Lifelong Learning Forests and Networks  (L2F/L2N)  ([code](https://github.com/neurodata/progressive-learning))
-  - Next: task oblivious hypotheses.
-3. Applications.
-  - Image tasks. (CIFAR)
+  - Implemented (task aware) Lifelong Learning Forests and Networks  (L2F/L2N)  ([code](https://github.com/neurodata/progressive-learning))
+  - Explored task unaware, robust transfer, and regression methods.
+3. Proof-of-Concept Applications.
+  - Image tasks. (CIFAR, Icon)
   - Language Tasks (Language Identification, Sentiment Analysis)
-  - Load forecasting.
-  - Next: PL for Robotic Process Automation (RPA).
+  - Time Series Regression (Load forecasting).
 
 ---
 
-.small[
-### Publications
+  .small[
+  ### Papers
+  
+  
+  1. R. Mehta et al. A General Theory of the Task Learnable, 2020. 
+  2. J. T. Vogelstein et al. [A general approach to progressive learning](https://arxiv.org/abs/2004.12908), arXiv, 2020
+  3. C. E. Priebe et al. [Modern Machine Learning: Partition and Vote](https://doi.org/10.1101/2020.04.29.068460), 2020. 
+  4. R. Mehta, et al. [Estimating Information-Theoretic Quantities with Uncertainty Forests](https://arxiv.org/abs/1907.00325). arXiv, 2019.
+  5. R. Perry, et al. [Manifold Forests: Closing the Gap on Neural Networks](https://openreview.net/forum?id=B1xewR4KvH). arXiv, 2019.
+  6. C. Shen and J. T. Vogelstein. [Decision Forests Induce Characteristic Kernels](https://arxiv.org/abs/1812.00029). arXiv, 2019
+  7. M. Madhya, et al. [Geodesic Learning via Unsupervised Decision Forests](https://arxiv.org/abs/1907.02844). arXiv, 2019.
+  
+  
+  ### Conferences 
+  1. J.T. Vogelstein et al. A biological implementation of lifelong learning in the pursuit of artificial general intelligence.  NAISys, 2020.
+  2. B. Pedigo et al.  A quantitative comparison of a complete connectome to artificial intelligence architectures. NAISys, 2020.
+  ]
 
+---
 
-1. R. Mehta et al. A General Theory of the Task Learnable, 2020. 
-1. J. T. Vogelstein et al. [A general approach to progressive learning](https://arxiv.org/abs/2004.12908), arXiv, 2020
-1. C. E. Priebe et al. [Modern Machine Learning: Partition and Vote](https://doi.org/10.1101/2020.04.29.068460), 2020. 
-1. R Guo, et al. [Estimating Information-Theoretic Quantities with Uncertainty Forests](https://arxiv.org/abs/1907.00325). arXiv, 2019.
-1. R. Perry, et al. [Manifold Forests: Closing the Gap on Neural Networks](https://openreview.net/forum?id=B1xewR4KvH). arXiv, 2019.
-1. C. Shen and J. T. Vogelstein. [Decision Forests Induce Characteristic Kernels](https://arxiv.org/abs/1812.00029). arXiv, 2019
-1. M. Madhya, et al. [Geodesic Learning via Unsupervised Decision Forests](https://arxiv.org/abs/1907.02844). arXiv, 2019.
+### Limitations / Room for Future Work
 
+--
 
-### Conferences 
-1. J.T. Vogelstein et al. A biological implementation of lifelong learning in the pursuit of artificial general intelligence.  NAISys, 2020.
-2. B. Pedigo et al.  A quantitative comparison of a complete connectome to artificial intelligence architectures. NAISys, 2020.
-]
+- Class imbalance.
 
+--
+
+- The extent of zero-shot learnability.
+
+--
+
+- Supervised weighting of various transformers (task relevance).
+
+--
+
+- Simulations / theory for task unaware learning.
+
+--
+
+- Simulations / theory for regression.
+
+--
+
+- An end-to-end system that relies on this methodology.
 
 ---
  
