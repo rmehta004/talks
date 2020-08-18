@@ -16,7 +16,7 @@
 
 
 
-### Progressive Learning 
+### Practical Progressive Learning 
 
 <p style="font-size:0.875em">
 Ronak Mehta <br>
@@ -36,15 +36,15 @@ August 18, 2020
 
 --
 
-- Given a .ye[set of tasks] (image classification, text classification, regression, hypothesis testing)...
+- Given a .ye[set of tasks] (image classification, sentiment analysis, hypothesis testing)...
 
 --
 
-- and some .ye[side information] (pre-trained models (ResNet, BERT), expert/oracle advice)... 
+- and some .ye[side information] (pre-trained models (ResNet, BERT), expert/oracle advice, inductive bias)... 
 
 --
 
-- perform better on each task by virtue of the other tasks and information.
+- .ye[perform better on each task] by virtue of the other tasks and information.
 
 ---
 
@@ -52,56 +52,23 @@ August 18, 2020
 
 --
 
-- Omnidirectional transfer (multitask learning)
+- Omnidirectional transfer
 
+- Sequential updates
 
-- Sequential updates (online/reinforcement learning)
+- Selective plasticity / Robustness
 
-
-- Robustness to adversarial data/tasks
-
-
-- Adhering to time/capacity contraints (PAC learning)
-
-
-- Selective plasticity (neurobiology)
-
-
-- Zero-shot or Few-shot learning
-
----
-
-### Our Goals
-
---
-
-- A mathematically formal statement of PL, and how it is done.
-
-- A general purpose algorithm. 
-
-- An extention for practical, "harder" scenarios.
-
----
-
-### Our Goals
-
-
-- .ye[A mathematically formal statement of PL, and how it is done.]
-
-- A general purpose algorithm. 
-
-- .ye[An extention for practical, "harder" scenarios.]
+- Quick adaptation to unseen tasks
 
 ---
 
 ### Previous Approach
 
-Let $x$ be some input, $y$ be a label, and $h$ be predictor that hopes $h(x)$ is close to $y$. 
+Let $x$ be some input, $t$ is a task label, $y$ be a label, and $h$ be predictor that makes $h(x, t)$ close to $y$. 
 
 --
 
 .center[![:scale 80%](images/Decompose.png)]
-
 
 ---
 
@@ -115,33 +82,24 @@ Let $x$ be some input, $y$ be a label, and $h$ be predictor that hopes $h(x)$ is
 
 .center[![:scale 80%](images/Ensemble.png)]
 
+---
+
+### My Goals
+
+- A mathematically formal statement of PL, theoretical analysis of ensembling representations.
+
+- Extentions of ensembling representations for practical scenarios.
 
 ---
 
-#### Project 1: Theory of the Task Learnable
-
-- What is a task?
-
-- What is the mathematical set up of PL (transfer, multitask)?
-
-- How do we measure the extent of transfer?
-
-- Formally, is being transferred between tasks (representations of data)?
-
-- Theorems: Ensembling representations is provably successful for PL. 
+#### Practical PL: Task Unaware + Robust
 
 
----
-
-#### Project 2: Task Unaware + Robust Learning
-
-
-- We currently learn classifier $h(x, t)$ (task aware)
-- Two extensions: 
-  - $h(x)$ (task unaware)
-    - within environment
-    - out-of-environment (zero-shot)
-  - $h(x, t)$ that uses the other transformers only if it helps (robust, selectively plastic)
+- We currently learn a .ye[task aware] classifier $h(x, t)$
+- Extension 1: .ye[task unaware] $h(x)$
+  - Within environment ($t$ associated to $x$ is seen before)
+  - Out-of-environment / Zero-shot ($t$ associated to $x$ is new.)
+- Extension 2: .ye[robust] $h(x, t)$ that uses the other transformers only if it helps.
 
 ---
 
@@ -153,7 +111,7 @@ $$ TE^t = \frac{\mathbb{E}\left[\text{error using only task } t \text { data}\ri
 
 --
 
-.ye[$TE$ measures NOT how valuable side information is, but how much $f$ leverages it.]
+.ye[$TE$ measures NOT how valuable side information is, but how much the algorithm leverages it.]
 
 ---
 
@@ -167,13 +125,13 @@ $$ TE^t = \frac{\mathbb{E}\left[\text{error using only task } t \text { data}\ri
 
 - Task aware test set up: give $h$ an image $x$ and a task $t$ (1-10), and guess object $y$.
 - Task unaware set up: just give $h$ an image $x$.
-- Upper bound is performance on "joint learning" classifier (gets all 100 classes at once).  
+- Upper bound is performance on "joint learning" classifier that gets all task data (100 classes) at once.  
 
 ---
 
 #### Experiment 1: CIFAR 10x10 (Task Unaware)
 
-.center[![:scale 100%](images/cifar100_task_obl_fig.png)]
+.center[![:scale 80%](images/cifar100_task_obl_fig.png)]
 
 ---
 
@@ -188,9 +146,9 @@ $$ TE^t = \frac{\mathbb{E}\left[\text{error using only task } t \text { data}\ri
 ### Experiment 2: Reviews
 
 - 3 datasets (tasks) each with text reviews of some item, and a sentiment (+ or -).
-  - Yelp (Task 1): Classify sentimtent of restuarants reviews.
-  - IMDB (Task 2): Classify sentimtent of movie reviews.
-  - Amazon (Task 3): Classify sentimtent of product reviews.
+  - Yelp (Task 1): Classify sentiment of restuarants reviews.
+  - IMDB (Task 2): Classify sentiment of movie reviews.
+  - Amazon (Task 3): Classify sentiment of product reviews.
 
 ---
 
@@ -210,7 +168,7 @@ $$ TE^t = \frac{\mathbb{E}\left[\text{error using only task } t \text { data}\ri
 #### Experiment 3: Icon Recog. (Task Unaware)
 
 .center[![:scale 80%](images/icon_task_obl_fig.png)]
-Source: Weiwei Yang
+Weiwei Yang
 
 ---
 
@@ -218,19 +176,19 @@ Source: Weiwei Yang
 
 --
 
-- PL is general enough to apply to a wide range of domains.
+1. PL is general enough to apply to a wide range of domains.
 
 --
 
-- PL is flexible enough to exhibit selective plasticity.
+2. PL is flexible enough to exhibit selective plasticity / robustness.
 
 --
 
-- PL can exhibit near optimal performance in task unaware settings in a federate manner.
+3. PL can exhibit near "optimal" performance in task unaware settings.
 
 --
 
-- If tasks are similar enough, task unaware PL can exhibit zero-shot learning.
+4. If tasks are similar enough, task unaware PL can exhibit zero-shot learning.
 
 ---
 
@@ -238,21 +196,17 @@ Source: Weiwei Yang
 
 --
 
-- Class imbalance.
-
 - The extent of zero-shot learnability.
 
-- Weighting of transformers differently (task relevance).
+- Weighted average of transformers instead of selecting them.
 
 - Simulations / theory for task unaware learning.
 
-- Regression
-
-- An end-to-end system that relies on this methodology.
+- An end-to-end system that relies on this PL.
 
 ---
 
-#### Where We Are
+<!-- #### Where We Are
 
 1. Theory
   - .ye[Formal set up PL (transfer, multitask)]
@@ -264,7 +218,7 @@ Source: Weiwei Yang
 3. Proof-of-Concept Applications.
   - Vision. (.ye[CIFAR 10x10], UI Icon Recognition)
   - Language. (Language Identification, .ye[Item Review Sentiment Analysis])
-  - Power Systems. (Load forecasting)
+  - Power Systems. (Load forecasting) -->
 
 ---
  
@@ -297,13 +251,31 @@ Source: Weiwei Yang
 
 ---
 
+#### Theory of the Task Learnable
+
+- What is a task?
+
+- What is the mathematical set up of PL (transfer, multitask)?
+
+- How do we measure the extent of transfer?
+
+- Formally, is being transferred between tasks (representations of data)?
+
+- Theorems: Ensembling representations is provably successful for PL. 
+
+---
+
+### Task Similarity Example
+
+.center[![:scale 100%](images/partition_example.png)]
+
+---
+
 ### Robustness Approach
 
 - Standard PL algorithm uses all the transformers available.
 - .ye[One-vs-All]: Decide to use all of the additional transformers or none, based on training/validation accuracy.
 - .ye[Sample]: Sample $c$ combinations of additional transformers, and choose the best combination based on training/validation accuracy.
-
----
 
 ---
 
