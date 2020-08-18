@@ -32,225 +32,80 @@ August 18, 2020
 
 ---
 
-### Outline 
-
-
-- [Motivation](#motiv)
-- [Measures of Performance](#perf)
-- [Approach](#approach)
-- [Experiments](#exp)
-- [Discussion](#disc)
-
----
-name:motiv
-
-### Outline 
-
-
-- Motivation
-- [Measures of Performance](#perf)
-- [Approach](#approach)
-- [Experiments](#exp)
-- [Discussion](#disc)
-
----
-
-### Example 1: Image Classification
-
-.center[![:scale 75%](images/Hypothesis1.png)]
-
---
-
-We want $h(x) = y$ to be close to the true answer $y'$.
-
----
-
-### Example 1: Image Classification
-
-.center[![:scale 75%](images/LearningAlgo1.png)]
-
---
-
-Training set $\bold{D}\_n = (x\_1, y\_1), (x\_2, y\_2), ..., (x\_n, y\_n)$.
-
----
-
-### Example 1: Image Classification
-.center[![:scale 85%](images/MultiLearningAlgo.png)]
-
----
-
-### Example 2: Sentiment Analysis
-
-.center[![:scale 85%](images/Hypothesis2.png)]
-
----
-
-### Example 2: Sentiment Analysis
-
-.center[![:scale 75%](images/LearningAlgo2.png)]
-
----
-
 ### What is Progressive Learning?
 
-Progressive learning ~ transfer learning... kind of.
+--
+
+- Given a .ye[set of tasks] (image classification, text classification, regression, hypothesis testing)...
 
 --
 
-- Omnidirectional (multitask learning)
+- and some .ye[side information] (pre-trained models (ResNet, BERT), expert/oracle advice)... 
 
 --
 
-- Sequential (online/reinforcement learning)
+- perform better on each task by virtue of the other tasks and information.
+
+---
+
+#### Make ML mirror Neurobiology
 
 --
 
-- Robustness to adversaries
+- Omnidirectional transfer (multitask learning)
 
---
 
-- Task awareness
+- Sequential updates (online/reinforcement learning)
 
---
 
-- Time/Capacity contraints
+- Robustness to adversarial data/tasks
 
---
 
-- Selective plasticity
+- Adhering to time/capacity contraints (PAC learning)
 
---
+
+- Selective plasticity (neurobiology)
+
 
 - Zero-shot or Few-shot learning
 
 ---
 
-### Goals
+### Our Goals
 
 --
 
-- Write a theoretical criterion for progressive learning (transfer, multitask, progressive learning).
+- A mathematically formal statement of progressive learning, and how it is done.
 
 --
 
-- Hypothesize a mechanism by which learners transfer knowledge from different tasks.
+- A general purpose algorithm. 
 
 --
 
-- Come up with an algorithm based on this mechanism that is satisfies the theoretical criterion and is successful in application.
-
---
-
-- Extend this method to work in pratical, "harder" scenarios.
+- An extention for practical, "harder" scenarios.
 
 ---
 
-### Goals
-
-- .ye[Write a theoretical criterion for progressive learning (transfer, multitask, progressive learning).]
-
-- Hypothesize a mechanism by which learner's transfer knowledge from different tasks.
-
-- Come up with an algorithm based on this mechanism that is satisfies the theoretical criterion and is successful in application.
-
-- .ye[Extend this method to work in pratical, "harder" scenarios.]
-
----
-name:perf
-
-### Outline 
+### Our Goals
 
 
-- [Motivation](#motiv)
-- Measures of Performance
-- [Approach](#approach)
-- [Experiments](#exp)
-- [Discussion](#disc)
+- .ye[A mathematically formal statement of progressive learning, and how it is done.]
+
+- A general purpose algorithm. 
+
+- .ye[An extention for practical, "harder" scenarios.]
 
 ---
 
-.center[Write a theoretical criterion for progressive learning (transfer, multitask, progressive learning).]
+### Previous Approach
 
----
-
-### Theory of the Task Learnable
-
-- What is a task?
-
---
-
-- What is the formal set up of transfer, multitask, and progressive Learning?
-
---
-
-- How do we measure the extent of transfer, multitask, and progressive Learning?
-
---
-
-- What exactly (formally) is being transferred between task (representations of data)?
-
---
-
-- What is a provably successful progressive learning algorithm?
-
----
-
-### Transfer Learning
-
-Given a .ye[target task] $t$ with target data $\mathbf{D}\_{n\_1}$, use a .ye[source dataset] $\mathbf{S}\_{n\_0}$ to increase performance on $t$.
-
----
-
-### Transfer Learning
-
-Given a .ye[target task] $t$ with target data $\mathbf{D}\_{n\_1}$, use a .ye[<del>source dataset</del> side information] $\mathbf{S}\_{n\_0}$ to increase performance on $t$.
-
-
----
-
-
-### Has $f$ Transfer Learned?
-
-
-Let the Transfer Efficiency (TE) be defined as:
-
-$$ TE\_{n\_0, n\_1}(f) = \frac{\mathbb{E}\left[\text{error of } f \text{ with target information}\right]}{\mathbb{E}\left[\text{error of } f \text{ with all information}\right]} $$
-
---
-
-$f$ .ye[transfer learns] task $t$ from source data 
-
-when its performance improves due to that data, i.e., when
-
-.center[$TE\_{n\_0, n\_1}(f) > 1$
-.]
-
---
-
-.ye[$TE$ measures NOT how valuable side information is, but how well $f$ uses it (at $n\_0$, $n\_1$, for $t$).]
-
----
-name:approach
-
-### Outline 
-
-
-- [Motivation](#motiv)
-- [Measures of Performance](#perf)
-- Approach
-- [Experiments](#exp)
-- [Discussion](#disc)
-
----
-
-.center[Hypothesize a mechanism by which learners transfer knowledge from different tasks.]
-
+Let $x$ be some input, $y$ be a label, and $h$ be classifier that hopes $h(x)$ is close to $y$. 
 
 ---
  
 
-### Decomposable Hypotheses 
+### Decompose Classifier
 
 
 ![:scale 100%](images/Decompose.png)
@@ -260,10 +115,7 @@ name:approach
 
 ### Key Idea 
 
-- .ye[Transformers from one task $t'$ can be composed with voters from another task $t$]
-- Learn many different transformers $u_{t'}(\cdot)$s 
-- For each $u\_{t'}$, learn voter per task $v\_{t,t'}$'s 
-- Use the decider to weight the various options 
+- Transformers from other tasks (or side information) can be used as additional representations.
 - This is .ye[ensembling representations].
 
 ---
@@ -274,22 +126,59 @@ name:approach
 
 ![:scale 100%](images/Ensemble.png)
 
----
-
-### Example: Partitions as Transformers
-
-![:scale 100%](images/partition_example.png)
 
 ---
 
-### Task Awareness
+#### Project 1: Theory of the Task Learnable
 
-- Task Aware: 
-$$h(x, t) = y$$
-- Task Unaware:
-$$h(x) = y$$
-$$h(x) = (y, t)$$
-Note: $t$ associated to the test point $x$ does not have to be seen in the training set.
+- What is a task?
+
+- What is the mathematical set up of transfer, multitask, and progressive Learning?
+
+- How do we measure the extent of transfer, multitask, and progressive Learning?
+
+- What exactly (formally) is being transferred between tasks (representations of data)?
+
+- Theorems: Ensembling representations is provably efficient and robust. 
+
+
+---
+
+#### Project 2: Task Unaware + Robust Learning
+
+
+- We can learn classifier $h(x, t)$ (task aware)
+- Two extensions: 
+  - $h(x)$ (task unaware)
+  - $h(x, t)$ that uses the other transformers only if it helps (robust)
+
+---
+
+### Robustness Approach
+
+- Standard PL algorithm uses all the transformers available.
+- .ye[One-vs-All]: Decide to use all of the additional transformers or none, based on training/validation accuracy.
+- .ye[Sample]: Sample $c$ combinations of additional transformers, and choose the best combination based on training/validation accuracy.
+
+---
+
+### Measure of Performance
+
+Let $f$ be a learning algorithm (eats data, outputs classifier $h$). The Transfer Efficiency (TE) is defined as:
+
+$$ TE^t(f) = \frac{\mathbb{E}\left[\text{error of } f \text{ with task } t \text { data}\right]}{\mathbb{E}\left[\text{error of } f \text{ with all data and information}\right]} $$
+
+--
+
+.ye[$TE$ measures NOT how valuable side information is, but how much $f$ leverages it.]
+
+---
+
+### CIFAR 10x10 Experiment
+
+- Image classification dataset with 10 tasks, each being 10 class classification.
+
+.center[![:scale 100%](images/robust_fig.png)]
 
 ---
 
@@ -316,40 +205,9 @@ $p(y | x) = \sum\_t p(y, t \mid x) = \sum\_t p(y \mid x, t) \cdot $ .ye[$p(t \mi
 - $h(x)$ first classifies $x$ according to $p(y \mid x, t)$ for all tasks $t$.
 - Among the task clasisfiers that did not yield "none-of-the-above", return $(y, t)$ that maximizes $p(y \mid x, t)$ over both $y$ and $t$.
 
-
 ---
 
-## Robustness Approach
-
-- Our standard PL algorithm uses all the transformers available.
-- .ye[One-vs-All]: Decide to use all of the additional transformers or none, based on training/validation accuracy.
-- .ye[Sample]: Sample $c$ combinations of additional transformers, and choose th best combination based on training/validation accuracy.
-
----
-name:exp
-
-### Outline 
-
-
-- [Motivation](#motiv)
-- [Measures of Performance](#perf)
-- [Approach](#approach)
-- Experiments
-- [Discussion](#disc)
-
----
-
-#### Task Aware: Robustness on CIFAR 10x10
-
-.center[![:scale 100%](images/robust_fig.png)]
-
----
-
-### Task Aware: UI Icon Recognition
-
----
-
-### Task Unaware: CIFAR 10x10
+### Task Unaware: CIFAR 10x10 
 
 
 .center[![:scale 100%](images/cifar100_task_obl_fig.png)]
@@ -358,15 +216,45 @@ name:exp
 
 #### Task Unaware: Zero-Shot Sentiment Classification on Reviews
 
-
+- TODO: explanation of task
 .center[![:scale 80%](images/review_zero_shot.png)]
 
 ---
 
 ### Task Unaware: UI Icon Recognition
 
-
+- TODO Explanation of task
 .center[![:scale 80%](images/icon_task_obl_fig.png)]
+
+---
+
+### Limitations / Room for Future Work
+
+--
+
+- Class imbalance.
+
+--
+
+- The extent of zero-shot learnability.
+
+--
+
+- Supervised weighting of various transformers (task relevance).
+
+--
+
+- Simulations / theory for task unaware learning.
+
+--
+
+- Regression
+
+--
+
+- An end-to-end system that relies on this methodology.
+
+---
 
 ---
 
@@ -403,34 +291,6 @@ name:exp
   1. J.T. Vogelstein et al. A biological implementation of lifelong learning in the pursuit of artificial general intelligence.  NAISys, 2020.
   2. B. Pedigo et al.  A quantitative comparison of a complete connectome to artificial intelligence architectures. NAISys, 2020.
   ]
-
----
-
-### Limitations / Room for Future Work
-
---
-
-- Class imbalance.
-
---
-
-- The extent of zero-shot learnability.
-
---
-
-- Supervised weighting of various transformers (task relevance).
-
---
-
-- Simulations / theory for task unaware learning.
-
---
-
-- Simulations / theory for regression.
-
---
-
-- An end-to-end system that relies on this methodology.
 
 ---
  
