@@ -28,7 +28,7 @@ August 18, 2020
 .center[![:scale 45%](images/microsoft.gif) ![:scale 35%](images/jhu_white.png)]
 <!-- .center[![:scale 20%](images/jhu_white.png)] -->
 
-<p style="font-style: italic;">Slides adapted from "Transmedia progressive learning" by Joshua Vogelstein.</p>
+<p style="font-style: italic;">Slide format from "Transmedia progressive learning" by Joshua Vogelstein.</p>
 
 ---
 
@@ -64,7 +64,7 @@ August 18, 2020
 
 ### Previous Approach
 
-Let $x$ be some input, $t$ is a task label, $y$ be a label, and $h$ be predictor that makes $h(x, t)$ close to $y$. 
+Let $x$ be some input, $t$ is a task label, $y$ be a class label, and $h$ be predictor that makes $h(x, t)$ close to $y$. 
 
 --
 
@@ -95,11 +95,11 @@ Let $x$ be some input, $t$ is a task label, $y$ be a label, and $h$ be predictor
 #### Practical PL: Task Unaware + Robust
 
 
-- We currently learn a .ye[task aware] classifier $h(x, t)$
+- We currently learn a .ye[task aware] predictor $h(x, t)$
 - Extension 1: .ye[task unaware] $h(x)$
   - Within environment ($t$ associated to $x$ is seen before)
   - Out-of-environment / Zero-shot ($t$ associated to $x$ is new.)
-- Extension 2: .ye[robust] $h(x, t)$ that uses the other transformers only if it helps.
+- Extension 2: .ye[robust] $h(x, t)$ that uses the other transformers only if they help.
 
 ---
 
@@ -123,8 +123,8 @@ $$ TE^t = \frac{\mathbb{E}\left[\text{error using only task } t \text { data}\ri
 
 --
 
-- Task aware test set up: give $h$ an image $x$ and a task $t$ (1-10), and guess object $y$.
-- Task unaware set up: just give $h$ an image $x$.
+- Task aware test set up: give $h$ an image $x$ and a task $t$ (1-10), and guess object $y$ (10 possibilities).
+- Task unaware set up: just give $h$ an image $x$ (100 possibilities).
 - Upper bound is performance on "joint learning" classifier that gets all task data (100 classes) at once.  
 
 ---
@@ -149,6 +149,7 @@ $$ TE^t = \frac{\mathbb{E}\left[\text{error using only task } t \text { data}\ri
   - Yelp (Task 1): Classify sentiment of restuarants reviews.
   - IMDB (Task 2): Classify sentiment of movie reviews.
   - Amazon (Task 3): Classify sentiment of product reviews.
+- Task Unaware (Zero shot) set up: train only on Yelp and IMDB reviews, but test on Amazon.
 
 ---
 
@@ -202,7 +203,7 @@ Weiwei Yang
 
 - Simulations / theory for task unaware learning.
 
-- An end-to-end system that relies on this PL.
+- An end-to-end system that relies on PL.
 
 ---
 
@@ -303,29 +304,6 @@ $p(y | x) = \sum\_t p(y, t \mid x) = \sum\_t p(y \mid x, t) \cdot $ .ye[$p(t \mi
 - Among the task clasisfiers that did not yield "none-of-the-above", return $(y, t)$ that maximizes $p(y \mid x, t)$ over both $y$ and $t$.
 
 ---
-
-### Language Task 2
-
-.small[
-1. What is application domain
-  - natural language processing
-2. What are the distributions from which tasks are sampled?
-  - Many words from each Bing dominant type
-3. What is known by agent before deployment? What gets learned?
-  1. Only knowing setting 
-  2. pretrained on other data 
-  3. Word embeddings from existing models
-4. What must be selectively remembered across tasks?
-  1. transformers (eg, hidden layers) from other types  
-5. How does scenario present signal and noise 
-  1. many samples per class define signal per dominant type 
-6. What aspects are unique to lifelong learning 
-  1. sequential tasks 
-7. Independent and dependent variables?
-  1. Independent: # types, # terms/type 
-  2. Dependent variables: forward and backward transfer efficiency
-]
-
  
 
 
